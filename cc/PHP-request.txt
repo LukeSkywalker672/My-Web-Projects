@@ -1,0 +1,14 @@
+DBAccess.php?cid=abc&mid="+msgID+"&msg="+msg+"&act="+act
+
+https://cryptochat.lukas-thurner.de/DBAccess.php?cid=abc&mid=1&msg=abc&act=create
+
+Gefordert: 540+360=900
+
+152
+152
+192
+152
+160
+96
+____
+904

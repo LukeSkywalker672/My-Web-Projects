@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Earth's Fury: Disasters by Country</title>
+    <meta name="description" content=Multiple Coordinated View" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="d3.v7.min.js"></script>
+    <link href="country.css" rel="stylesheet" />
+    <script src="barCharts.js"></script>
+    <script src="country.js"></script>
+</head>
+
+<body>
+    <h2><a href="index.html">Earth's Fury: Over 100 Years of Natural Disasters</a></h2>
+    <h1>Disasters in
+        <select id="nation" name="nation" class="form-control" onchange="makeDiagramms()"></select>
+    </h1>
+
+
+    <main>
+        
+        <section class="left">
+            <h3>Disaster By Subgroup 1900 - 2021</h3>
+            <div id="subgroup" class="chart"></div>
+        </section>
+
+        <section class="right">
+            <h3>Disaster By Type 1900 - 2021</h3>
+            <div id="barChart" class="chart"></div>
+        </section>
+
+    </main>
+
+    <h3>Annual Disaster Occurence 1900 - 2021</h3>
+    <div id="lineChart"  class="chart"></div>
+
+    <h3>Frequency of Disaster</h3> 
+    <div id="Heatmap" class="chart"></div>
+
+    <main>
+
+        <section class="left">
+            <h3>Affected people</h3>
+            <div id="areaChart"  class="chart"></div>
+        </section>
+
+        <section class="right">
+            <h3>Total Deaths from earthquake magnitude</h3>
+            <div id="Scatterplot"  class="chart"></div>
+        </section>
+
+    </main>
+    <div class="tooltip" id="tooltip"></div>
+</body>

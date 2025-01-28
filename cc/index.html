@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html onclick="sB()" onkeydown="sB()" onmouseover="sB()" >
+    <head>
+        <meta charset="UTF-8">
+        <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+        <title id="title">CryptoChat</title>
+        <script src="crypto.js"></script>
+        <!-- <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/pbkdf2.js"></script> -->
+        <script>
+var blinker = false;  //in case of new msg
+var nmsg = false; //nmsg = new message
+var snd = new Audio("msg.wav"); // buffers automatically when created
+var play = true;
+/*
+var key1 = CryptoJS.enc.Hex.parse("6963072e9fe4ba4e29536614611156a8530d55e876ef2d6cbb380a79b10e8dcb");  //outcomment after debug
+var key2 = CryptoJS.enc.Hex.parse("5db64340c6423c845261eb57ba120e55f9b26fff924e0958ecb566c2");  //outcomment after debug
+var key3 = CryptoJS.enc.Hex.parse("5d924e0958b643423c841eb57ba10c6420e55f9526b6c226fffecb56");  //outcomment after debug
+var key4 = CryptoJS.enc.Hex.parse("423c841b5658b643e557ba10c6420ed6fff924e09b55f9526b6c22e6");  //outcomment after debug
+var key5 = CryptoJS.enc.Hex.parse("423c841b5658b643e557ba10c6420ed6fff924e09b55f9526b6c22e6");  //outcomment after debug
+var key6 = CryptoJS.enc.Hex.parse("423c841b5658b643e557ba10c6420ed6fff924e09b55f9526b6c22e6");  //outcomment after debug
+*/
+var cid = "8ceec8d83abf17c57612";
+var msgID = 0;
+var response = "";
+var loggedIn = false;
+var container = CryptoJS.AES.encrypt("msg","pw");  //creating sample container
+container.iv = CryptoJS.enc.Hex.parse("00000000");
+container.salt = container.iv;
+container.key = container.iv;
+container.ciphertext = container.iv;
+var updating = -1;
+var atxt = new Array(); //all text
+atxt[0] = "wild card";
+var actPeriods = 15;
+var active = actPeriods;
+var uc = 0; //uc = update count -- debugging only
+var oun = false; //oun = other user name -->if(oun)msgIncoming(); line 174
+
+
+function main()  //creating default usr name
+{
+   document.getElementById("user").value = "user" + Math.floor(Math.random()*100);
+}
+function openChannel()
+{
+    msgID = 0;
+    response = "";
+    atxt = new Array(); //all text
+    atxt[0] = "wild card";
+    document.getElementById("out").innerHTML = "<span id='LCL' >LOADING CHATLOG... PLEASE WAIT (You can already send messages meanwhile)</span>";  //Clear output box
+    document.getElementById("SLCL").innerHTML = "";  //Show "Loading Chat Log.."
+    document.getElementById("HideChat").innerHTML = "";  //show boxes
+    hash();
+    //cid = "a";  //REMOVE AFTER DEBUG!!!
+    document.getElementById("ck").innerHTML = key1;  //debugging
+    document.getElementById("key2").innerHTML = key2;  //debugging
+    document.getElementById("chid").innerHTML = cid;  //debugging
+    if(document.getElementById("dcn").checked) document.getElementById("name").value = "";
+    
+    /*var d = new Date();
+    d = "SM<"+d.getHours()+":"+d.getMinutes()+" "+document.getElementById("user").value + " joined channel>";
+    d = encrypt(d);*/
+    var d = new Date();
+    d = "["+d.getHours()+":"+d.getMinutes()+"]";
+    d += document.getElementById("user").value + ": JOINED CHANNEL";
+    
+    ajax(encrypt(d),"create");
+    
+    loggedIn = true;
+    updating = -1;
+}
+function hash()
+{
+    var ks1 = CryptoJS.enc.Utf8.parse("8|Çqºo¯+#A"); //ks1 = konstant salt 1
+    var ks2 = CryptoJS.enc.Utf8.parse("ð)RÑðµëu-&");
+    var ks3 = CryptoJS.enc.Utf8.parse("7@çÖl-¼.&@");
+    //var ks4 = CryptoJS.enc.Utf8.parse("{Òß£.XÉ¼~+");
+    cid = CryptoJS.SHA256(document.getElementById("name").value);
+    var pw = CryptoJS.SHA3("ZümäÎÖ®RÙõ4" + document.getElementById("pw").value); //the pw must not influence the cid but the keys
+    var hash1 = CryptoJS.SHA3(document.getElementById("name").value);
+    for (var i = 0; i<256; i++) cid = CryptoJS.SHA3(cid);  //Increasing complexity of an attack by 2^9
+    
+    //var hash256 = cid;
+    key6 = CryptoJS.enc.Latin1.stringify(cid);
+    
+    key3 = CryptoJS.SHA384(ks3.concat(cid));
+    key3 = CryptoJS.SHA3(key3.concat(hash1), { outputLength: 384 });
+    key3 = CryptoJS.SHA256(key3.concat(pw));
+    
+    key4 = CryptoJS.SHA3("{Òß£.XÉ¼~+" + key6 + pw.toString(CryptoJS.enc.Latin1) + hash1.toString(CryptoJS.enc.Latin1) , { outputLength: 224 });
+    key4 = CryptoJS.SHA3(key4, { outputLength: 224 });
+    
+    key5 = CryptoJS.SHA3("_snÑ0î<Wh,§d" + pw.toString(CryptoJS.enc.Latin1) + key6 + hash1.toString(CryptoJS.enc.Latin1) , { outputLength: 256 });
+    key5 = CryptoJS.SHA3(key4, { outputLength: 224 });
+    
+    key6 = CryptoJS.SHA3(key6 + "_nÑ0î<sWh,§d" + pw.toString(CryptoJS.enc.Latin1) + hash1.toString(CryptoJS.enc.Latin1));
+    key6 = CryptoJS.SHA3(key4, { outputLength: 384 });
+    
+    for (var i = 0; i<256; i++) cid = CryptoJS.SHA3(cid);
+    key2 = CryptoJS.SHA3(ks2.concat(cid).concat(pw), { outputLength: 256 });
+    key2 = CryptoJS.SHA3(CryptoJS.SHA256(key2.concat(hash1)), {outputLength:224});
+    key1 = CryptoJS.SHA256(ks1.concat(hash1).concat(cid).concat(pw));
+    
+    cid = CryptoJS.SHA3(cid = CryptoJS.SHA3(cid));
+    cid = CryptoJS.enc.Hex.stringify(cid);
+    cid = cid.substr(0,40) + "ea4f490e43193750c38d83a164f7" + cid.substr(50,60);  //destroy 112bit of information
+    cid = CryptoJS.enc.Hex.parse(cid);
+    cid = CryptoJS.SHA3(cid, { outputLength: 384 });
+    cid = CryptoJS.SHA3(cid, { outputLength: 384 });
+    cid = CryptoJS.SHA3(cid, { outputLength: 256 });
+    cid = CryptoJS.SHA256(cid);
+    cid = CryptoJS.SHA3(cid, { outputLength: 224 });
+    cid = CryptoJS.SHA3(cid, { outputLength: 224 });
+    cid = CryptoJS.enc.Base64.stringify(CryptoJS.RIPEMD160(cid)).substr(0,21);
+    cid = cidffDB(cid).toLowerCase();
+}
+function send()
+{
+    var u = document.getElementById("user").value;
+    if(""==u)
+    {
+        alert("Choose a Username");
+        return;
+    }
+    var msg = document.getElementById("msg").value;
+    if (msg=="") return;
+    if(msg.length > 32720)
+    {
+        alert("Message cannot be longer as 32,720 characters!");
+        return;
+    }
+    document.getElementById("msg").value = "";
+    var d = new Date();
+    d = "["+d.getDate()+"/"+(d.getMonth()+1)+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"]";
+    msg = d + u + ": " + msg;
+    msg = encrypt(msg);
+    output(ajax(msg,"upload"));
+}
+function delChan()
+{
+    loggedIn = false;
+    ajax("","terminate");
+    document.getElementById("HideChat").innerHTML = "#chat{display: none;}"; //CSS
+    msgID = 0;
+    //document.getElementById("out").innerHTML = "Channel Deleted!";
+    cancel();
+}
+function ajax(msg, act)
+{
+    document.getElementById("sent").innerHTML += ("\n"+msg); //debugging
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState == 4 && xmlhttp.status==200)
+        {
+            response = xmlhttp.responseText;
+        }
+    }
+    xmlhttp.open("GET","DBAccess.php?cid="+cid+"&mid="+msgID+"&msg="+msg+"&act="+act, true);
+    xmlhttp.send();
+    return response;
+}
+function output(str)
+{
+    if(str == "") return;
+    else if(str.substr(0,2) =="SM")
+    {
+        document.getElementById("out").innerHTML += ("<br>"+str.substr(2));
+        loggedIn = false;
+        window.location.reload();  //page reload => total reset
+    }
+    else
+    {
+        var oldMID = msgID;
+        document.getElementById("rsp").innerHTML = str;  //debugging
+        str = str.substr(0,str.length-1);  //get rid of final "#"
+        var A = str.split('#');  //id;msg#id;msg...
+        str = ""; //the current decrypted message
+        var swap;
+        for(var i = 0; i<A.length; i++)
+        {
+            swap = A[i].split(";");
+            if(msgID<parseInt(swap[0],10)) //than is not up to date
+            {
+                msgID = parseInt(swap[0]);  //update msgID
+                str = decrypt(swap[1]);  //swap[1] = Message
+                str = findURL(str);
+                str = str.split("\n").join("<br/>"); //replace all \n by <br/>
+                atxt[msgID] = str;
+                str = (str.split("]")[1]).split(":")[0]; //username landet in str
+                if(document.getElementById("user").value != str) oun = true;
+                str = CryptoJS.RIPEMD160(str).toString().substr(0,6);
+                //colors close to white r replaced by black by following line
+                if(parseInt(str.substr(0,2),16)>208 && parseInt(str.substr(2,2),16)>208 && parseInt(str.substr(4,2),16)>208) str = "000000";
+                document.getElementById("out").innerHTML += ("<span style='color:#"+str+"'>"+atxt[msgID]+"</span><br/>");
+            }
+        }
+        if(oldMID==msgID) return;
+        else
+        {
+            if(oun) msgIncoming();
+            oun = false;
+            //document.getElementById("out").innerHTML += str;
+            document.getElementById("mid").innerHTML = msgID; //debugging info
+            if(document.getElementById("scroll").checked)
+            {
+                var out = document.getElementById('out');
+                out.scrollTop = out.scrollHeight;
+            }
+            document.getElementById("SLCL").innerHTML = "#LCL{display:none}"; //von hinten durch die Brust ins Auge...
+        }
+    }
+}
+function colorCheck(str) //colors close to white r replaced with black
+{
+    if(parseInt(str.substr(0,2),16)>210 && parseInt(str.substr(2,2),16)>210 && parseInt(str.substr(4,2),16)>210) str = "000000";
+    return str;
+}
+setInterval("updateIf()", 2000);
+function updateIf()  //a big complicated semaphore, to limit update-speed to necessary.
+{
+    if(!loggedIn) return;
+    if(nmsg) blink(); //nmsg = new msg
+    active--;
+    document.getElementById("act").innerHTML = active; //debugging
+    if(updating<0 && active > 0)  //No point sending new Ajax request if old one not answerd - unless more than 9s ago.
+    {
+        updating = 5;
+        output(ajax("","update"));
+        document.getElementById("uc").innerHTML = ++uc; //update counter -- debugging
+        updating = 0;
+    }
+    updating--;
+    if(active < -28) active = 2; //=> if(user==afk) updates 1 time, than waits 30 periods(60s)
+}
+function update()  //only for debugging
+{
+    output(ajax("","update"));
+}
+/*
+function encrypt(msg)
+{
+    msg = enAES(enRabbit(msg));
+    return B64ffA(CryptoJS.enc.Base64.stringify(CryptoJS.enc.Latin1.parse(msg)));
+}
+function decrypt(cipher)
+{
+    cipher = CryptoJS.enc.Latin1.stringify(CryptoJS.enc.Base64.parse(reverseB64ffA(cipher)));
+    return deRabbit(deAES(cipher));
+}
+function enAES(msg)
+{
+    var salt  = CryptoJS.lib.WordArray.random(12);
+    setNonces(key1, key2, 6, 4, salt);
+    var encrypted = CryptoJS.AES.encrypt(msg, nonce1, { iv: nonce2 });
+    encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Latin1);
+    return salt.toString(CryptoJS.enc.Latin1) + encrypted;
+}
+function deAES(cipher)
+{
+    var encrypted = container;
+    var salt = CryptoJS.enc.Latin1.parse(cipher.substring(0,12));
+    encrypted.ciphertext = CryptoJS.enc.Latin1.parse(cipher.substring(12));
+    setNonces(key1, key2, 6, 4, salt);
+    encrypted = CryptoJS.AES.decrypt(encrypted, nonce1, { iv: nonce2 });
+    return CryptoJS.enc.Utf8.stringify(encrypted);
+}
+function enRabbit(msg)
+{
+    var salt  = CryptoJS.lib.WordArray.random(12);
+    //setNonces(key3, key4, 3, 4, salt);
+    var otk1 = CryptoJS.SHA256(salt.toString(CryptoJS.enc.Latin1) + key3.toString(CryptoJS.enc.Latin1));
+    var iv = CryptoJS.SHA224(salt.toString(CryptoJS.enc.Latin1) + key4.toString(CryptoJS.enc.Latin1));
+    var encrypted = CryptoJS.Rabbit.encrypt(msg, otk1, { iv: iv });
+    encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Latin1);
+    return salt.toString(CryptoJS.enc.Latin1) + encrypted;
+}
+function deRabbit(cipher)
+{
+    var encrypted = container;
+    var salt = CryptoJS.enc.Latin1.parse(cipher.substring(0,12));
+    encrypted.ciphertext = CryptoJS.enc.Latin1.parse(cipher.substring(12));
+    //setNonces(key3, key4, 3, 4, salt);
+    var otk1 = CryptoJS.SHA256(salt.toString(CryptoJS.enc.Latin1) + key3.toString(CryptoJS.enc.Latin1));
+    var iv = CryptoJS.SHA224(salt.toString(CryptoJS.enc.Latin1) + key4.toString(CryptoJS.enc.Latin1));
+    encrypted = CryptoJS.Rabbit.decrypt(encrypted, otk1, { iv: iv });
+    return CryptoJS.enc.Utf8.stringify(encrypted);
+}
+*/
+function encrypt2(msg)
+{
+    msg =  CryptoJS.enc.Utf8.parse(msg);
+    msg = enAES2( msg );
+    return B64ffA(CryptoJS.enc.Base64.stringify(msg));
+}
+function decrypt2(cipher)
+{
+    cipher = CryptoJS.enc.Base64.parse( reverseB64ffA(cipher) );
+    cipher = deAES2( cipher );
+    return CryptoJS.enc.Utf8.stringify(cipher);
+}
+function enAES2(msg)
+{
+    var salt  = CryptoJS.lib.WordArray.random(12);
+    var otk1 = CryptoJS.SHA3( MWA(salt, key1) ,{ outputLength: 256 });
+    var otk2 = CryptoJS.SHA3( MWA(key2, salt) ,{ outputLength: 256 });
+    var iv = CryptoJS.SHA3( MWA(salt, key3) ,{ outputLength: 224 } );
+    var encrypted = CryptoJS.AES.encrypt(msg, otk1, { iv : iv });
+    encrypted.ciphertext = enRabbit2(encrypted.ciphertext);
+    encrypted = CryptoJS.AES.encrypt(encrypted.ciphertext, otk2, { iv : iv });
+    return MWA( salt, encrypted.ciphertext );
+}
+function deAES2(cipher)
+{
+    var encrypted = container;
+    var salt = CryptoJS.enc.Hex.parse(cipher.toString().substr(0, 24));  //the first 12B r salt
+    encrypted.ciphertext = CryptoJS.enc.Hex.parse(cipher.toString().substr(24));     //the rest is ciphertext
+    var otk1 = CryptoJS.SHA3( MWA(salt, key1) ,{ outputLength: 256 });
+    var otk2 = CryptoJS.SHA3( MWA(key2, salt) ,{ outputLength: 256 });
+    var iv = CryptoJS.SHA3( MWA(salt, key3) ,{ outputLength: 224 });
+    encrypted.ciphertext = CryptoJS.AES.decrypt(encrypted, otk2, { iv : iv });
+    
+    encrypted.ciphertext = deRabbit2(encrypted.ciphertext);
+    
+    return CryptoJS.AES.decrypt(encrypted, otk1, { iv : iv });
+}
+function enRabbit2(msg)
+{
+    var salt  = CryptoJS.lib.WordArray.random(12);
+    var otk1 = CryptoJS.SHA3( MWA(salt, key4) ,{ outputLength: 256 });
+    var otk2 = CryptoJS.SHA3( MWA(key5, salt) ,{ outputLength: 256 });
+    var iv = CryptoJS.SHA3( MWA(salt, key6) ,{ outputLength: 224 } );
+    var encrypted = CryptoJS.Rabbit.encrypt(msg, otk1, { iv : iv });
+    encrypted = CryptoJS.Rabbit.encrypt(encrypted.ciphertext, otk2, { iv : iv });
+    return MWA( salt, encrypted.ciphertext );
+}
+function deRabbit2(cipher)
+{
+    var encrypted = container;
+    var salt = CryptoJS.enc.Hex.parse(cipher.toString().substr(0, 24));  //the first 12B r salt
+    encrypted.ciphertext = CryptoJS.enc.Hex.parse(cipher.toString().substr(24));     //the rest is ciphertext
+    var otk1 = CryptoJS.SHA3( MWA(salt, key4) ,{ outputLength: 256 });
+    var otk2 = CryptoJS.SHA3( MWA(key5, salt) ,{ outputLength: 256 });
+    var iv = CryptoJS.SHA3( MWA(salt, key6) ,{ outputLength: 224 });
+    encrypted.ciphertext = CryptoJS.Rabbit.decrypt(encrypted, otk2, { iv : iv });
+    return CryptoJS.Rabbit.decrypt(encrypted, otk1, { iv : iv });
+}
+function MSGkeyHit(e)
+{
+    if (e.keyCode == 13 && document.getElementById("e2s").checked && !e.shiftKey) //e2s = enter to send
+    {
+        send();
+        return false; //is necessary to kill the enter signal, so msg field will remain empty after sending
+    }
+}
+function NameKeyHit(e)
+{
+    if (e.keyCode == 13) 
+    {
+        openChannel();
+        return false;
+    }
+}
+function warn()
+{
+    document.getElementById("warning").innerHTML = "#warn {display:none;}"
+}
+function cancel()
+{
+    document.getElementById("warning").innerHTML = "#del {display: none;}"
+}
+function mask()
+{
+    if(document.getElementById("mcn").checked) document.getElementById("name").type="password";
+    else document.getElementById("name").type="text";
+}
+function msgIncoming()
+{
+    nmsg = true;
+    if(play)snd.play();
+}
+function blink()
+{
+    if(!blinker) document.getElementById("title").innerHTML = "NEW MESSAGE!";
+    else document.getElementById("title").innerHTML = "CryptoChat";
+    blinker = !blinker;
+}
+function sB()  //sB = stopBlink
+{
+    active = actPeriods;
+    if(!nmsg)return;
+    nmsg = false;
+    document.getElementById("title").innerHTML = "CryptoChat";
+    blinker = false;
+}
+function soundonoff()
+{
+    if(document.getElementById("snd").checked) play = true;
+    else play = false;
+}
+function xp()
+{
+    if(document.getElementById("xp").checked) document.getElementById("hideExpert").innerHTML = "";
+    else play = document.getElementById("hideExpert").innerHTML = '*[name="expert"]{display:none;}';
+}
+function debug()
+{
+    if(document.getElementById("sdi").checked) document.getElementById("hideDebug").innerHTML = "";
+    else document.getElementById("hideDebug").innerHTML = "#debug{display:none;}";
+}
+function test()
+{
+    var out = document.getElementById('out');
+    out.scrollTop = out.scrollHeight;
+}
+function replace(str)
+{
+    return str.split("\n").join("<br/>");
+}
+function findURL(str)
+{
+    if("string" != (typeof str)) return str;
+    var s = str.indexOf("http");  //s=start
+    if(s==-1) return str;
+    var A = str.split("");
+    var e = s;  //e=end
+    for (; e<A.length; e++)
+    {
+        if(A[e] == " " || A[e] == "\n") return makeURL(str, s, e);
+    }
+    return makeURL(str, s, A.length);
+}
+function makeURL(str, s, e)
+{
+    var url = str.substring(s,e);
+    return str.substring(0,s) + '<a href="' + url + '" target="_blank">' + url + '</a>' + findURL(str.substring(e));
+}
+function B64ffA(B64) //Base64 fit for AJAX
+{
+    B64 = B64.split("");
+    for(var i = B64.length; i>=0; i--)
+    {
+        if(B64[i] == '+') B64[i] = '-';
+    }
+    return B64.join("");
+}
+function reverseB64ffA(B64)
+{
+    B64 = B64.split("");
+    for(var i = B64.length; i>=0; i--)
+    {
+        if(B64[i] == '-') B64[i] = '+';
+    }
+    return B64.join("");
+}
+function cidffDB(str) //channel ID fit for DataBase
+{
+    str = str.split("");
+    for(var i = str.length; i>=0; i--)
+    {
+        if(str[i]=='+' || str[i]=='/') str[i] = 'a';
+    }
+    return str.join("");
+}
+function MWA(A1, A2)
+{
+    return CryptoJS.enc.Hex.parse( CryptoJS.enc.Hex.stringify(A1) + CryptoJS.enc.Hex.stringify(A2) );
+}
+function CWA(A1)
+{
+    return CryptoJS.enc.Hex.parse( CryptoJS.enc.Hex.stringify(A1) );
+}
+function Cut(WA, end)
+{
+    return CryptoJS.enc.Hex.parse(WA.toString().substr(0, 2*end));
+}
+function setNonces(WA1, WA2, alg1, alg2, salt)
+{
+    nonce1 = SH(MWA(salt, WA1), alg1);
+    nonce2 = SH(MWA(salt, WA2), alg2);
+}
+function SH(WA, alg) //SH = Switch Hash
+{
+    switch(alg)
+    {
+        case 0: return CryptoJS.SHA3(WA); break;
+        case 1: return CryptoJS.SHA3(WA, { outputLength: 384 }); break;
+        case 2: return CryptoJS.SHA3(WA, { outputLength: 256 }); break;
+        case 3: return CryptoJS.SHA3(WA, { outputLength: 224 }); break;
+        case 4: return CryptoJS.RIPEMD160(WA); break;
+        case 5: return CryptoJS.SHA384(WA); break;
+        case 6: return CryptoJS.SHA256(WA); break;
+        case 7: return CryptoJS.SHA224(WA); break;
+        default: return CryptoJS.SHA256(WA); break;
+    }
+}
+function TE(iterations, length)  //Test Encryption
+{
+    document.getElementById("ec").innerHTML = "Test Running";
+    var TR = true;
+    var msg;
+    var cipher;
+    var transferable = "";
+    for(var i = 0; i<iterations; i++)
+    {
+        msg = CryptoJS.enc.Latin1.stringify(CryptoJS.lib.WordArray.random(length));
+        
+        cipher = enAES(enRabbit(msg));
+        cipher = CryptoJS.enc.Latin1.parse(cipher);
+        cipher = CryptoJS.enc.Base64.stringify(cipher);
+        cipher = B64ffA(cipher);
+        
+        transferable += cipher;
+        
+        cipher = reverseB64ffA(cipher);
+        cipher = CryptoJS.enc.Base64.parse(cipher);
+        cipher = CryptoJS.enc.Latin1.stringify(cipher);
+        cipher = deRabbit(deAES(cipher));
+        if(msg != cipher) TR = false;
+    }
+    document.getElementById("ec").innerHTML = TR;
+    alert(TR);
+    return transferable;
+}
+/* function PBKDF2()  //lahmarsch algorithmus
+{
+    var s1 = CryptoJS.lib.WordArray.random(128/8);
+    var h = CryptoJS.PBKDF2( key2 , s1 , { keySize: 512/32 }).toString(CryptoJS.enc.Hex);
+    return CryptoJS.enc.Hex.parse(h);//.slice(0,5);
+} */
+        </script>
+        <style id="HideChat">
+            #chat{display: none;}
+        </style>
+        <style>
+            #out {max-width:450px; border: double #000000 5px; height: 300px; overflow: scroll;}
+            #user{width: 450px;}
+            #msg {width: 450px; height: 80px}
+            #name, #pw, #u, #eb {width: 290px;}
+        </style>
+        <style id="warning">
+            #del {display:none;}
+        </style>
+        <style id="hideDebug">
+                #debug{display:none;}
+        </style>
+        <style id="hideExpert">
+            *[name="expert"]{display:none;}
+        </style>
+        <style id="colorMyName"></style>
+        <style id="SLCL"></style>
+    </head>
+    <body>
+        <h1>CryptoChat</h1>
+        <h3>Confidential & Simplistic</h3>
+        <input type="text" id="name" onkeypress="return NameKeyHit(event)" placeholder="Channelnamen Eingeben" /><br>
+        <input type="password" id="pw" name="expert" onkeypress="return NameKeyHit(event)" placeholder="PW zwecks extra verschlüsselung (optional)" /><br>
+        <input type="button" id="eb" value="Enter or Create Channel" onclick="openChannel()" /><br/>
+        <input type="checkbox" id="xp" onclick="xp()" />Developer Mode
+        <p name="expert">
+            <input type="checkbox" id="mcn" onchange="mask()" />Mask Channel Name<br>
+            <input type="checkbox" id="dcn" checked />Delete Channel Name after login<br>
+            <input type="checkbox" id="sdi" onchange="debug()" />Show Debugging Info<br>
+        </p>
+        <div id="chat">
+            <input type="button" value="Delete Channel" onclick="warn()" id="warn"/>
+            <b id="del">
+                WARNING: DELETE CHANNEL?
+                <input type="button" value="Cancel" onclick="cancel()" />
+                <input type="button" value="Delete Channel" onclick="delChan()"/>
+            </b>
+            <br />
+            <p id="out"><span id='LCL' >LOADING CHATLOG... PLEASE WAIT</span></p>
+            <input type="text" id="user" placeholder="Choose Username" /><br/>
+            <textarea id="msg" onkeypress="return MSGkeyHit(event)" placeholder="Enter Message" ></textarea><br/>
+            <input type="button" value="send" onclick="send()" />
+            <p name="expert">
+                <input type="checkbox" id="e2s" checked />Enter to Send<br/>
+                <input type="checkbox" id="scroll" checked />Auto Scroll Down<br/>
+                <input type="checkbox" id="snd" onclick="soundonoff()" checked />Play Sound
+            </p>
+        </div>
+        <div id="debug">
+            <input type="button" value="update" onclick="update()" />
+            <br/>
+            last response:
+            <p id="rsp"></p>
+            key 1:
+            <p id="ck"></p>
+            key 2:
+            <p id="key2"></p>
+            cid:
+            <p id="chid"></p>
+            msg id:
+            <p id="mid"></p>
+            sent msgs:
+            <p id="sent"></p>
+            active:
+            <p id="act" ></p>
+            update count:
+            <p id="uc"></p>
+            Encryption Test:
+            <p id="ec"></p>
+            <input type="button" onclick="TE(1000, 32)" value="Run Test" />
+        </div>
+        <script>
+            main();
+        </script>
+    </body>
+</html>

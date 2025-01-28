@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Multiple Coordinated View</title>
+    <meta name="description" content=Multiple Coordinated View" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="https://d3js.org/d3.v7.min.js"></script> 
+    <link href="mvc.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <h1>Multiple Coordinated View</h1>
+  
+    <div>
+      <label for="passenger-class"><strong>Passenger Class:</strong></label>
+      <select id="passenger-class">
+        <option value="" selected>All Classes</option>
+        <option value="1">First Class</option>
+        <option value="2">2nd Class</option>
+        <option value="3">3rd Class</option>
+      </select>
+    </div>
+  
+    <main>
+      <section>
+        <h3>Gender Distribution</h3>
+        <strong>Selected Gender: </strong>
+        <span id="selectedSex"></span>
+        <svg id="sex"></svg>
+      </section>
+  
+      <section>
+        <h3>Age Histogram</h3>
+        <svg id="age"></svg>
+      </section>
+    </main>
+
+    <hr/>
+
+    <main>
+      <section>
+        <h3>Fare Histogram</h3>
+        <svg id="fare"></svg>
+      </section>
+
+      <section>
+        <h3>Survived Distribution</h3>
+        <svg id="survivor"></svg>
+      </section>
+    </main>
+
+    <script src="mvc.js"></script>
+    <script src="fareSurvivor.js"></script>
+  </body>
+</html>

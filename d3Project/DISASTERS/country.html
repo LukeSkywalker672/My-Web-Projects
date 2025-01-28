@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Disasters by Country</title>
+    <meta name="description" content=Multiple Coordinated View" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="d3.v7.min.js"></script>
+    <link href="country.css" rel="stylesheet" />
+    <script src="country.js"></script>
+</head>
+
+<body>
+    <h2>Earth's Fury: 121 Years of Natural Disasters</h2>
+    <h1>Disasters in
+        <select id="nation" name="nation" class="form-control" onchange="makeDiagramms()"></select>
+    </h1>
+
+    <main>
+        <section id="left">
+            <h3>Disaster By Type 1900 - 2021</h3>
+            <div id="barChart"></div>
+        </section>
+
+        <section id="right">
+            <h3>Annual Disaster Occurence 1900 - 2021</h3>
+            <div id="lineChart"></div>
+
+            <h3>Affected people</h3>
+            <div id="areaChart"></div>
+        </section>
+
+    </main>
+    <div class="tooltip" id="tooltip"></div>
+</body>

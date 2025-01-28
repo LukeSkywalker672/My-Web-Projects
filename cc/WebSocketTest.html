@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+var connection = new WebSocket('ws://html5rocks.websocket.org/echo',['soap','xmpp']);
+
+//When the con is open, send data
+connection.onopen = function()
+{
+    connection.send('Ping');  //This is not necessarily called by onopen(). This send msg to server
+};
+//Log errors
+connection.onerror = function(error)
+{
+    console.log('WebSocket Error' + error);
+};
+//Log messages from the server
+connection.onmessage = function(e) //Rcv. msg from server, this func is called, e.date contains msg
+{
+    console.log('Server: '+e.data);
+};
+/*function cars()
+{
+    var cars = new Array("Saab","Volvo","BMW");
+    return cars;
+}*/
+        </script>
+    </head>
+    <body>
+        <a href="http://www.w3schools.com/" target="_blank">Visit W3Schools!</a>
+    </body>
+</html>
