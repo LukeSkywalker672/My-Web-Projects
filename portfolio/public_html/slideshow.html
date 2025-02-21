@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <title  id="text_3d_0">Bildergallerie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="black-style.css" />
+    <script src="localize.js"></script>
+    <style>
+      img {
+        vertical-align: middle;
+      }
+
+      /* Slideshow container */
+      .slideshow-container {
+        max-width: 1000px;
+        position: relative;
+        margin: auto;
+      }
+      
+      /* Next & previous buttons */
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        padding: 16px;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+      }
+
+      /* Position the "next button" to the right */
+      .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+      }
+
+      /* On hover, add a black background color with a little bit see-through */
+      .prev:hover,
+      .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      /* Caption text */
+      .text {
+        color: #f2f2f2;
+        font-size: 15px;
+        padding: 8px 12px;
+        position: absolute;
+        bottom: 8px;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Number text (1/3 etc) */
+      .numbertext {
+        color: #f2f2f2;
+        font-size: 12px;
+        padding: 8px 12px;
+        position: absolute;
+        top: 0;
+      }
+
+      /* The dots/bullets/indicators */
+      .dot {
+        cursor: pointer;
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        transition: background-color 0.6s ease;
+      }
+
+      .active,
+      .dot:hover {
+        background-color: #717171;
+      }
+
+      /* Fading animation */
+      .fade {
+        animation-name: fade;
+        animation-duration: 1.5s;
+      }
+
+      @keyframes fade {
+        from {
+          opacity: 0.4;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* On smaller screens, decrease text size */
+      @media only screen and (max-width: 300px) {
+        .prev,
+        .next,
+        .text {
+          font-size: 11px;
+        }
+      }
+    </style>
+
+
+  </head>
+  <body>
+    <nav>
+      <h2 id="logo" class="logo" onclick="window.location.href = './index.html'">Port<span class="red">folio</span></h2>
+      <ul id="menu">
+        <li><a href="./index.html#home" id="home">Home</a></li>
+        <li><a href="./index.html#about"  id="text1">Über mich</a></li>
+        <li><a href="./index.html#projects-title" id="text2">Projekte</a></li>
+        <li><a href="./index.html#contact"  id="text3">Kontakt</a></li>
+      </ul>
+      <button class="button" id="languageButton" >English Version</a>
+    </nav>
+    <!-- End of Sticky Menu -->
+
+    <div class="slideshow-container">
+      <span id="slides"></span>
+
+      <a class="prev" onclick="plusSlides(-1)">❮</a>
+      <a class="next" onclick="plusSlides(1)">❯</a>
+    </div>
+    <br />
+
+    <div id="dots" style="text-align: center"></div>
+
+    <script>
+      let g_slideIndex = 1;
+
+      //document.addEventListener("DOMContentLoaded", init);
+      function init() {
+        function genSlides(objects, name) {
+          objects.forEach((obj, n) => {
+            slides.innerHTML += `<div class="mySlides fade">
+                <div class="numbertext">${n+1} / 3</div>
+                <img src="./img/${obj.src}" style="width: 100%" />
+                <div class="text" id="text_${name}_${n+1}">${obj.text}</div>
+              </div>`;
+            dots.innerHTML += `<span class="dot" onclick="currentSlide(${n+1})"></span>`;
+          });
+        }
+
+        const slideshow = new URLSearchParams(window.location.search).get('slideshow');
+        if(slideshow === '3d') genSlides([
+          {src:"Buddha.jpg",text:"Ein Schreibtisch-Buddha"},
+          {src:"Statue_of_Liberty.jpg",text:"Die Freiheitsstatue"},
+          {src:"keychain.jpg",text:"Schlüsselanhänger"}
+        ], slideshow);
+        else if(slideshow === 'workcenter') genSlides([
+          {src:"root.jpg",text:"Überblick über alle Abteilungen der Fabrik"},
+          {src:"department.jpg",text:"Überblick über sämtliche Linien der Montage-Abteilung"},
+          {src:"workcenter.jpg",text:"Liniendashboard für eine Produktionslinie"}
+        ], slideshow);
+        else if(slideshow === 'kapa') genSlides([
+          {src:"FZV.jpg",text:"Visualisierte Messwerte wie oft die Frozen Zone im Werk verletzt wird"},
+          {src:"kapa.jpg",text:"Rückstand und Arbeitsvorrat an den Linien in der Fabrik"},
+          {src:"kapa2.jpg",text:"Angebot und Belastung an Arbeitskraft an verschiedenen Produktionslinien pro Kalenderwoche visualisiert"},
+          {src:"VSI.jpg", text:"VSI und DLZ für verschiedene Produktionslinien visualisiert"},
+          {src:"SQL.jpg", text:"Ein parametrisierter SQL-Befehl den ich entwickelt habe umd VSI und DLZ für eine beliebige Gruppe von Produktionslinien für n viele Tage, Wochen, Monate oder Jahre zu errechnen"},
+        ], slideshow);
+
+        showSlides(g_slideIndex);
+      }
+      
+      function plusSlides(n) {
+        showSlides((g_slideIndex += n));
+      }
+
+      function currentSlide(n) {
+        showSlides((g_slideIndex = n));
+      }
+
+      function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+        if (n > slides.length) {
+          g_slideIndex = 1;
+        }
+        if (n < 1) {
+          g_slideIndex = slides.length;
+        }
+        for (i = 0; i < slides.length; i++) {
+          slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+          dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[g_slideIndex - 1].style.display = "block";
+        dots[g_slideIndex - 1].className += " active";
+      }
+      init(); //I want to be sure the init() function is executed before the initLang() function
+    </script>
+  </body>
+</html>

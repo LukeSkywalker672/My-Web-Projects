@@ -1,0 +1,14 @@
+Portfolio To-DO:
+1. ✅ Kleine Bilder für Karten -- 
+2. ❌ Große Bilder für Hintergrundeffekt 
+3. ✅ Große Bilder für Bildergalierie -- 
+4. ✅ Verbesserte Übersetzung -- 
+5. ✅ Die Dots automatisch generieren bei der Slideshow um Error in Konsole zu vermeiden --
+6. ✅ facicon.png -- 
+7. ✅ ./img -- 
+8. ✅ Scrum Zertifikate -- 
+9. ✅ Onclick und cursor:pointer auf Karten -- 
+10.❌ Move EarthsFury to Subdomain
+11.❌ change background
+12.❌ fix America bug
+13.❌ Fix Translation Bug on Srum Cards
