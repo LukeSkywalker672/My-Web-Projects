@@ -8,7 +8,6 @@ Portfolio To-DO:
 7. ✅ ./img -- 
 8. ✅ Scrum Zertifikate -- 
 9. ✅ Onclick und cursor:pointer auf Karten -- 
-10.❌ Move EarthsFury to Subdomain
 11.❌ change background
 12.❌ fix America bug
-13.❌ Fix Translation Bug on Srum Cards
+13.✅ Fix Translation Bug on Srum Cards
