@@ -8,6 +8,6 @@ Portfolio To-DO:
 7. ✅ ./img -- 
 8. ✅ Scrum Zertifikate -- 
 9. ✅ Onclick und cursor:pointer auf Karten -- 
-11.❌ change background
+11.❌ change background to Stars
 12.❌ fix America bug
 13.✅ Fix Translation Bug on Srum Cards

@@ -43,3 +43,7 @@ if(window.innerWidth < 1100) toSmalldesign();
 
 //window.addEventListener("resize", () => console.log(window.innerWidth));
 window.addEventListener("resize", () => {window.innerWidth < 1100 ? toSmalldesign() : toBigDesign();});
+
+//After this point: Remove hover-scale-Effect on mobile devices
+document.addEventListener("DOMContentLoaded", () => { if(navigator.maxTouchPoints) onlyForDesktop.remove(); else onlyForMobile.remove(); })
+

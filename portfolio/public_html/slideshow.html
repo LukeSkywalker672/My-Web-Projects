@@ -2,6 +2,7 @@
 <html lang="de">
   <head>
     <title  id="text_3d_0">Bildergallerie</title>
+    <link rel="icon" href="./img/icon.PNG" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="black-style.css" />
     <script src="localize.js"></script>
@@ -107,6 +108,13 @@
         }
       }
     </style>
+    <style id="Below850">
+      nav a {font-size: 80%;}
+      #logo {font-size: 80%;}
+      #languageButton {font-size: 80%; padding: 8px 15px;}
+      nav ul li {padding: 10px;}
+      nav {padding: 10px;}
+    </style>
 
 
   </head>
@@ -121,6 +129,10 @@
       </ul>
       <button class="button" id="languageButton" >English Version</a>
     </nav>
+    <script>
+      if(window.innerWidth > 850) Below850.remove();
+      else {menu.children[3].remove(); menu.children[0].remove();}
+    </script>
     <!-- End of Sticky Menu -->
 
     <div class="slideshow-container">
