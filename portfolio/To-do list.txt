@@ -1,6 +1,6 @@
 Portfolio To-DO:
 1. ✅ Kleine Bilder für Karten -- 
-2. ❌ Große Bilder für Hintergrundeffekt 
+2. ✅ Große Bilder für Hintergrundeffekt 
 3. ✅ Große Bilder für Bildergalierie -- 
 4. ✅ Verbesserte Übersetzung -- 
 5. ✅ Die Dots automatisch generieren bei der Slideshow um Error in Konsole zu vermeiden --
